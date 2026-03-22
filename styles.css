@@ -9,6 +9,8 @@
   --accent: #0c8f7c;
   --accent-strong: #0a7668;
   --accent-rgb: 12, 143, 124;
+  --hint-plate: #f2f7ff;
+  --hint-plate-border: transparent;
   --border: rgba(16, 32, 57, 0.12);
   --shadow: 0 14px 34px rgba(13, 32, 62, 0.14);
   --shadow-hover: 0 22px 42px rgba(11, 36, 67, 0.2);
@@ -26,6 +28,8 @@ html[data-theme="dark"] {
   --accent: #5f9f97;
   --accent-strong: #4f8780;
   --accent-rgb: 95, 159, 151;
+  --hint-plate: #f2f7ff;
+  --hint-plate-border: rgba(255, 255, 255, 0.08);
   --border: rgba(170, 197, 238, 0.18);
   --shadow: 0 18px 36px rgba(2, 9, 19, 0.5);
   --shadow-hover: 0 26px 50px rgba(0, 0, 0, 0.56);
@@ -119,11 +123,65 @@ h1 {
 }
 
 .reliability-disclaimer {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   margin: 1.65rem 0 0;
-  max-width: 72ch;
+  min-height: 8.75rem;
+  width: 100%;
+  padding: 0.45rem 11rem 0.35rem 0;
   color: var(--muted);
   font-size: 0.93rem;
   line-height: 1.6;
+  --hint-box-size: 156px;
+  --hint-image-size: 128px;
+  --hint-box-right: 0;
+  --hint-box-bottom: -0.15rem;
+}
+
+.humphrey-hint {
+  position: absolute;
+  right: var(--hint-box-right);
+  bottom: var(--hint-box-bottom);
+  width: var(--hint-box-size);
+  height: var(--hint-box-size);
+  background: var(--hint-plate);
+  border: 1px solid var(--hint-plate-border);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 220ms ease, transform 220ms ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.humphrey-hint::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--hint-image-size);
+  height: var(--hint-image-size);
+  background: url("./assets/humpey_400x400.png") center / contain no-repeat;
+  opacity: 0.25;
+  filter: grayscale(0.12);
+  transform: translate(-50%, -44%);
+  pointer-events: none;
+}
+
+.reliability-disclaimer:hover .humphrey-hint,
+.reliability-disclaimer:focus-visible .humphrey-hint,
+.reliability-disclaimer.is-hint-visible .humphrey-hint {
+  transform: translateY(0);
+  opacity: 0.92;
+}
+
+.reliability-disclaimer:focus-visible {
+  outline: none;
+}
+
+.reliability-disclaimer-copy {
+  position: relative;
+  z-index: 1;
 }
 
 .app-card {
@@ -275,5 +333,21 @@ h1 {
 
   .app-card {
     min-height: 13.2rem;
+  }
+
+  .reliability-disclaimer {
+    min-height: 0;
+    padding-right: 6.2rem;
+    --hint-box-size: 108px;
+    --hint-image-size: 92px;
+    --hint-box-right: 0;
+    --hint-box-bottom: 0;
+  }
+
+  .humphrey-hint {
+    width: var(--hint-box-size);
+    height: var(--hint-box-size);
+    right: var(--hint-box-right);
+    bottom: var(--hint-box-bottom);
   }
 }

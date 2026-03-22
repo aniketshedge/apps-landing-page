@@ -24,10 +24,12 @@ const THEME_HOURS = {
 
 const appGrid = document.getElementById("app-grid");
 const themeToggle = document.getElementById("theme-toggle");
+const reliabilityDisclaimer = document.getElementById("reliability-disclaimer");
 let activeTheme = pickThemeByTime();
 
 applyTheme(activeTheme);
 renderCards();
+setupDisclaimerHint();
 
 themeToggle.addEventListener("click", () => {
   activeTheme = activeTheme === "light" ? "dark" : "light";
@@ -144,4 +146,41 @@ function hasTextSelection() {
     return false;
   }
   return selection.toString().trim().length > 0;
+}
+
+function setupDisclaimerHint() {
+  if (!reliabilityDisclaimer) {
+    return;
+  }
+
+  const coarsePointerQuery = window.matchMedia("(hover: none), (pointer: coarse)");
+
+  reliabilityDisclaimer.addEventListener("click", (event) => {
+    if (!coarsePointerQuery.matches) {
+      return;
+    }
+    if (hasTextSelection()) {
+      return;
+    }
+    event.stopPropagation();
+    reliabilityDisclaimer.classList.toggle("is-hint-visible");
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!coarsePointerQuery.matches) {
+      return;
+    }
+    if (reliabilityDisclaimer.contains(event.target)) {
+      return;
+    }
+    reliabilityDisclaimer.classList.remove("is-hint-visible");
+  });
+
+  reliabilityDisclaimer.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+    event.preventDefault();
+    reliabilityDisclaimer.classList.toggle("is-hint-visible");
+  });
 }
